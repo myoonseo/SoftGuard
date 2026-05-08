@@ -11,8 +11,12 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedOrigins("http://soft-guard.vercel.app/")
-                .allowedMethods("GET", "POST", "PUT", "DELETE");
+                .allowedOrigins(
+                        "http://localhost:3000",
+                        "https://soft-guard.vercel.app"  // http → https, 슬래시 제거
+                )
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true);  // 인증 헤더 사용 시 필요
     }
 }
