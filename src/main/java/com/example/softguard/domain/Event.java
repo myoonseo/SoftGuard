@@ -47,9 +47,5 @@ public class Event {
     @Column(name = "video_url")
     private String videoUrl;
 
-    // 요약
-    @Column(name = "is_summarized", nullable = false)
-    private Boolean isSummarized = false;
-
 
 }

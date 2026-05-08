@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class NearMissController {
     //API endPoint 작성
     // LLM 사건 카드 관련 이벤트 스트림
+    //이거 없어도 될듯
 
 
 }
