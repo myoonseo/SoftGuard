@@ -31,9 +31,9 @@ public class EventController {
         return eventService.getEvents(location, level, from, to, limit);
     }
 
-    @GetMapping(value = "/stream/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe() {
-        return sseEmitterService.createEmitter();
-    }
+    //@GetMapping(value = "/stream/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+   // public SseEmitter subscribe() {
+        //return sseEmitterService.createEmitter();
+    //}
 }
 
