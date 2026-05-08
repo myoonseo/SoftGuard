@@ -47,5 +47,9 @@ public class Event {
     @Column(name = "video_url")
     private String videoUrl;
 
+    //summary 부분 추가!
+    @Column(columnDefinition = "TEXT")
+    private String summary;
+
 
 }
