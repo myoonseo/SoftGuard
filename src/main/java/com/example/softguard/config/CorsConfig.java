@@ -12,6 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
                 .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("http://soft-guard.vercel.app/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }
