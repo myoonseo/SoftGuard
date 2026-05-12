@@ -53,6 +53,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                 "WHERE CONVERT(SUBSTRING(time, 1, 2), UNSIGNED) BETWEEN 18 AND 22",
                 nativeQuery = true)
         Long countNighttime();
+
+        //summary 관련
+        @Query("SELECT e FROM Event e WHERE e.createdAt BETWEEN :start AND :end ORDER BY e.createdAt ASC")
+        List<Event> findEventsBetween(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
     }
 
 

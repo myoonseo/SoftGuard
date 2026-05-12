@@ -62,7 +62,7 @@ public class AnalyticsService {
         return raw.stream()
                 .map(r -> LabelValueDto.builder()
                         .label((String) r[0])
-                        .value(Math.round((Long) r[1] * 10.0 / weeks) / 10.0)
+                        .value((double) Math.round((Long) r[1] / (double) weeks))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -91,7 +91,7 @@ public class AnalyticsService {
                 ));
 
         List<HourlyBucketDto> result = new ArrayList<>();
-        for (int i = 0; i < 24; i += 2) {
+        for (int i = 0; i <= 24; i += 2) {
             String hour = String.format("%02d", i);
             result.add(HourlyBucketDto.builder()
                     .bucket(hour)
