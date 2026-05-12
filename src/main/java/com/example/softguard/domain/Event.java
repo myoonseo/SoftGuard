@@ -37,6 +37,15 @@ public class Event {
     @Column(name = "pedestrian_count")
     private Integer pedestrian_count;
 
+    // ✅ 추가 - 감지된 PM(전동킥보드) 수
+    @Column(name = "pm_count")
+    private Integer pmCount;
+
+    // ✅ 추가 - 예상 충돌 시간 (예: "2.3sec")
+    @Column(name = "collision_time")
+    private String collisionTime;
+
+
     private String action;
 
     @CreationTimestamp
