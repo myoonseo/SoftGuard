@@ -60,6 +60,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
+        //summary가 null인 Event 조회
+        @Query("SELECT e FROM Event e WHERE e.videoUrl IS NOT NULL AND e.summary IS NULL ORDER BY e.createdAt ASC")
+        List<Event> findPendingEvents();
+
+
     }
 
 

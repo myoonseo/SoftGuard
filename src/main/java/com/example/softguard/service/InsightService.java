@@ -25,8 +25,8 @@ public class InsightService {
     private final HyperClovaXService hyperClovaXService;
 
     // ① 매 정시마다 자동 실행 (스케줄러)
-    @Scheduled(fixedDelay = 20000)
-    //@Scheduled(cron = "0 0 * * * *")
+    //@Scheduled(fixedDelay = 20000)
+    @Scheduled(cron = "0 0 * * * *")
     public void generateHourlySummary() {
         log.info("[Scheduler] 1시간 요약 생성 시작");
 
