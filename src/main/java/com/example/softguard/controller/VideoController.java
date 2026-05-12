@@ -5,6 +5,7 @@ import com.example.softguard.domain.Event;
 import com.example.softguard.dto.VideoUploadRequest;
 import com.example.softguard.repository.EventRepository;
 import com.example.softguard.service.S3Service;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class VideoController {
     // 카메라/디바이스에서 S3에 영상 업로드 후 관련 데이터를 백엔드에 전송
     // POST /api/videos/upload
     @PostMapping("/upload")
+    @Transactional
     public ResponseEntity<?> uploadVideo(@RequestBody VideoUploadRequest request) {
         try {
             log.info("[Video] 영상 업로드 요청 - videoUrl: {}, level: {}", request.getVideoUrl(), request.getLevel());
