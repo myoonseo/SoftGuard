@@ -31,6 +31,16 @@ public class ResultController {
             Map<String, Object> metadata = (Map<String, Object>) payload.get("metadata");
             String videoId = (String) metadata.get("video_id");
 
+            //event 추가
+            Object eventIdObj = metadata.get("event_id");
+            if (eventIdObj == null) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "status", "error",
+                        "message", "event_id가 없습니다."
+                ));
+            }
+            Long eventId = Long.valueOf(eventIdObj.toString());
+
             // event_stream
             Map<String, Object> eventStream = (Map<String, Object>) payload.get("event_stream");
             int riskLevel = (int) eventStream.get("risk_level");
@@ -41,11 +51,15 @@ public class ResultController {
             Map<String, Object> reportData = (Map<String, Object>) payload.get("report_data");
             String rootCause = (String) reportData.get("root_cause");
 
+            // ✅ eventId로 정확히 찾기
+            Event event = eventRepository.findById(eventId)
+                    .orElseThrow(() -> new RuntimeException("Event를 찾을 수 없습니다: " + eventId));
+
             // video_url 기준으로 Event 찾기
-            Event event = eventRepository.findAll().stream()
-                    .filter(e -> e.getVideoUrl() != null && e.getVideoUrl().contains(videoId))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("해당 영상의 Event를 찾을 수 없습니다: " + videoId));
+            //Event event = eventRepository.findAll().stream()
+             //       .filter(e -> e.getVideoUrl() != null && e.getVideoUrl().contains(videoId))
+              //      .findFirst()
+            //orElseThrow(() -> new RuntimeException("해당 영상의 Event를 찾을 수 없습니다: " + videoId));
 
             // (일단은)risk_level 숫자 → RiskLevel Enum 변환
             // 1~3: normal, 4~6: warning, 7~10: danger
