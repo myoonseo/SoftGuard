@@ -92,7 +92,7 @@ public class AnalyticsService {
                 ));
 
         List<HourlyBucketDto> result = new ArrayList<>();
-        for (int i = 0; i <=24; i += 2) {
+        for (int i = 0; i <=24; i ++) {
             String hour = String.format("%02d", i);
             result.add(HourlyBucketDto.builder()
                     .bucket(hour)
