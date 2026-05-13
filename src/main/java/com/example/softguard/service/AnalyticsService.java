@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AnalyticsService {
     private final EventRepository eventRepository;
+    private final AccidentTypeService accidentTypeService; //추가
 
     public StatsResponseDto getStats(String location, LocalDate date) {
         Map<RiskLevel, Long> todayCountMap = eventRepository.countTodayGroupByLevel()
@@ -91,7 +92,7 @@ public class AnalyticsService {
                 ));
 
         List<HourlyBucketDto> result = new ArrayList<>();
-        for (int i = 0; i <= 24; i += 2) {
+        for (int i = 0; i <=24; i += 2) {
             String hour = String.format("%02d", i);
             result.add(HourlyBucketDto.builder()
                     .bucket(hour)
@@ -101,14 +102,28 @@ public class AnalyticsService {
         return result;
     }
 
-    private List<LabelValueDto> buildTypeRatio() {
-        List<AccidentTypeProjection> results = eventRepository.findAccidentTypeCount();
-        long total = results.stream().mapToLong(AccidentTypeProjection::getCount).sum();
+//    private List<LabelValueDto> buildTypeRatio() {
+//        List<AccidentTypeProjection> results = eventRepository.findAccidentTypeCount();
+//        long total = results.stream().mapToLong(AccidentTypeProjection::getCount).sum();
+//
+//        return results.stream()
+//                .map(p -> LabelValueDto.builder()
+//                        .label(p.getAccidentType())
+//                        .value(total == 0 ? 0.0 : Math.round(p.getCount() * 1000.0 / total) / 10.0)
+//                        .build())
+//                .collect(Collectors.toList());
 
-        return results.stream()
-                .map(p -> LabelValueDto.builder()
-                        .label(p.getAccidentType())
-                        .value(total == 0 ? 0.0 : Math.round(p.getCount() * 1000.0 / total) / 10.0)
+    private List<LabelValueDto> buildTypeRatio() {
+        // AccidentTypeService에서 분류된 데이터 가져오기
+        List<Map<String, Object>> classified = accidentTypeService.getAccidentTypeStats();
+        long total = classified.stream()
+                .mapToLong(m -> (Long) m.get("count"))
+                .sum();
+
+        return classified.stream()
+                .map(m -> LabelValueDto.builder()
+                        .label((String) m.get("accidentType"))
+                        .value(total == 0 ? 0.0 : Math.round((Long) m.get("count") * 1000.0 / total) / 10.0)
                         .build())
                 .collect(Collectors.toList());
     }

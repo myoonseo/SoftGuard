@@ -106,7 +106,7 @@ public class InsightService {
         if (latest == null) {
             return InsightResponse.builder()
                     .timeRange("-")
-                    .summary("아직 생성된 요약이 없습니다.")
+                    .summary("AI 분석 결과를 준비 중입니다.")
                     .build();
         }
 

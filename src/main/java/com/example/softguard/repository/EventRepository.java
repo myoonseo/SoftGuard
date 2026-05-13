@@ -5,6 +5,7 @@ import com.example.softguard.domain.RiskLevel;
 import com.example.softguard.projection.AccidentTypeProjection;
 import com.example.softguard.projection.HourlyProjection;
 import com.example.softguard.projection.LevelCountProjection;
+import com.example.softguard.projection.RawAccidentProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,6 +32,14 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                 "WHERE e.object1 IS NOT NULL AND e.object2 IS NOT NULL " +
                 "GROUP BY e.object1, e.object2")
         List<AccidentTypeProjection> findAccidentTypeCount();
+
+        //추가
+        // EventRepository.java
+        @Query("SELECT e.object1 as object1, e.object2 as object2, COUNT(e) as count " +
+                "FROM Event e " +
+                "WHERE e.object1 IS NOT NULL AND e.object2 IS NOT NULL " +
+                "GROUP BY e.object1, e.object2")
+        List<RawAccidentProjection> findRawAccidentTypeCount();
 
         //요일별 발생 건수-> 하드코딩 진행
 
