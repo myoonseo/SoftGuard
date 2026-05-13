@@ -44,7 +44,7 @@ public class ResultController {
             // event_stream
             Map<String, Object> eventStream = (Map<String, Object>) payload.get("event_stream");
             int riskLevel = (int) eventStream.get("risk_level");
-            String locationText = (String) eventStream.get("location_type");
+           // String locationText = (String) eventStream.get("location_type");
             List<String> involvedActors = (List<String>) eventStream.get("involved_actors");
 
 
@@ -81,7 +81,7 @@ public class ResultController {
 
             // Event 업데이트
             event.setLevel(level);
-            event.setLocation(locationText);
+            //event.setLocation(locationText);
             event.setSummary(rootCause);
             event.setVehicleCount(vehicleCount);
             event.setPedestrianCount(pedestrianCount);

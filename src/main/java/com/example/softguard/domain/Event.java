@@ -65,5 +65,7 @@ public class Event {
     @Column(columnDefinition = "TEXT")
     private String summary;
 
+    @Column(name = "is_processed", nullable = false)
+    private boolean processed = false;
 
 }

@@ -25,7 +25,8 @@ public class EventService {
             String to,
             int limit
     ){
-        return eventRepository.findAll(); // 일단 이걸로 테스트
+        //return eventRepository.findAll(); // 일단 이걸로 테스트
+        return eventRepository.findBySummaryIsNotNullOrderByCreatedAtDesc(); //수정
     }
 
 }
