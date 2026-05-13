@@ -62,7 +62,8 @@ public class VideoController {
 
             // 자동 설정 값
             event.setTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))); // 현재 시각
-            event.setLocation("분석 전"); // AI 분석 후 채워짐
+            //event.setLocation("분석 전"); // AI 분석 후 채워짐
+            event.setLocation(request.getLocation() != null ? request.getLocation() : "분석 전");
 
             // DB에 저장
             Event savedEvent = eventRepository.save(event);

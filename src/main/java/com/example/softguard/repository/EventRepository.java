@@ -66,7 +66,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         List<Event> findPendingEvents();
 
     // summary가 존재하는 Event 조회 (이벤트 스트림 카드용)
-    List<Event> findBySummaryIsNotNullOrderByCreatedAtDesc();
+        List<Event> findBySummaryIsNotNullOrderByCreatedAtDesc();
 
 
 }
