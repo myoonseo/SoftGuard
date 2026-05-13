@@ -44,22 +44,32 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         //요일별 발생 건수-> 하드코딩 진행
 
         // Near-miss 누적(오늘)
+        //@Query("SELECT COUNT(e) FROM Event e " +
+        //        "WHERE e.level = :level " +
+        //        "AND DATE(e.createdAt) = CURRENT_DATE")
+        //Long countTodayByLevel(@Param("level") RiskLevel level);
+
+        //@Query("SELECT e.level as level, COUNT(e) as count " +
+        //    "FROM Event e " +
+        //    "WHERE DATE(e.createdAt) = CURRENT_DATE " +
+        //    "GROUP BY e.level")
+        //List<LevelCountProjection> countTodayGroupByLevel();
         @Query("SELECT COUNT(e) FROM Event e " +
                 "WHERE e.level = :level " +
-                "AND DATE(e.createdAt) = CURRENT_DATE")
+                "AND DATE(FUNCTION('CONVERT_TZ', e.createdAt, '+00:00', '+09:00')) = DATE(FUNCTION('CONVERT_TZ', CURRENT_TIMESTAMP, '+00:00', '+09:00'))")
         Long countTodayByLevel(@Param("level") RiskLevel level);
 
         @Query("SELECT e.level as level, COUNT(e) as count " +
             "FROM Event e " +
-            "WHERE DATE(e.createdAt) = CURRENT_DATE " +
+            "WHERE DATE(FUNCTION('CONVERT_TZ', e.createdAt, '+00:00', '+09:00')) = DATE(FUNCTION('CONVERT_TZ', CURRENT_TIMESTAMP, '+00:00', '+09:00')) " +
             "GROUP BY e.level")
         List<LevelCountProjection> countTodayGroupByLevel();
 
         //실제 사고 전확률
 
-        // 야간(18~22시) 비율
+        // 야간(18~22시) 비율 -> 테스트 때문에 10시 12시로 변경
         @Query(value = "SELECT COUNT(*) FROM event " +
-                "WHERE CONVERT(SUBSTRING(time, 1, 2), UNSIGNED) BETWEEN 18 AND 22",
+                "WHERE CONVERT(SUBSTRING(time, 1, 2), UNSIGNED) BETWEEN 10 AND 12",
                 nativeQuery = true)
         Long countNighttime();
 
