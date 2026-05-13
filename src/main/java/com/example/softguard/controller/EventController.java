@@ -21,7 +21,7 @@ public class EventController {
     private final SseEmitterService sseEmitterService;
 
     @GetMapping("/stream")
-    public List<Event> getEventStream(
+    public List<Event> getEventStream( // 여기서 summaryr가 없으면 넘겨지지XX
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String level,
             @RequestParam(required = false) String from,

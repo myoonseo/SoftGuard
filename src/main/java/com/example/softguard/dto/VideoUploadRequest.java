@@ -13,6 +13,8 @@ public class VideoUploadRequest {
     //S3에 저장된 썸네일 이미지 URL
     private String thumbnailUrl;
 
+    private String action;
+
     // 위험 단계 (문자열로 받아서 Enum으로 변환)
     // 예: "danger", "warning", "normal"
     private String level;

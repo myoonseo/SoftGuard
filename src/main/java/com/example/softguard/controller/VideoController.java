@@ -53,6 +53,7 @@ public class VideoController {
             event.setThumbnailUrl(request.getThumbnailUrl()); //썸네일 관련
             event.setLevel(request.getRiskLevel());      // "danger" → RiskLevel.danger 자동 변환
             event.setState(request.getState());
+            event.setAction(request.getAction());
             event.setVehicleCount(request.getVehicleCount() != null ? request.getVehicleCount() : 0);
             event.setPedestrianCount(request.getPedestrianCount() != null ? request.getPedestrianCount() : 0);
             event.setPmCount(request.getPmCount() != null ? request.getPmCount() : 0);

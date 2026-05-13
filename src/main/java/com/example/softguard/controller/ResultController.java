@@ -47,9 +47,11 @@ public class ResultController {
             String locationText = (String) eventStream.get("location_type");
             List<String> involvedActors = (List<String>) eventStream.get("involved_actors");
 
+
             int vehicleCount = (int) eventStream.get("vehicleCount");
             int pedestrianCount = (int) eventStream.get("pedestrianCount");
             int pmCount = (int) eventStream.get("pmCount");
+
 
             // report_data
             Map<String, Object> reportData = (Map<String, Object>) payload.get("report_data");
