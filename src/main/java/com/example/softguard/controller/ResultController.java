@@ -49,7 +49,7 @@ public class ResultController {
 
             // report_data
             Map<String, Object> reportData = (Map<String, Object>) payload.get("report_data");
-            String rootCause = (String) reportData.get("root_cause");
+            String rootCause = (String) reportData.get("sequence_of_events");
 
             // ✅ eventId로 정확히 찾기
             Event event = eventRepository.findById(eventId)
