@@ -47,6 +47,10 @@ public class ResultController {
             String locationText = (String) eventStream.get("location_type");
             List<String> involvedActors = (List<String>) eventStream.get("involved_actors");
 
+            int vehicleCount = (int) eventStream.get("vehicleCount");
+            int pedestrianCount = (int) eventStream.get("pedestrianCount");
+            int pmCount = (int) eventStream.get("pmCount");
+
             // report_data
             Map<String, Object> reportData = (Map<String, Object>) payload.get("report_data");
             List<String> sequenceList = (List<String>) reportData.get("sequence_of_events");
@@ -77,6 +81,9 @@ public class ResultController {
             event.setLevel(level);
             event.setLocation(locationText);
             event.setSummary(rootCause);
+            event.setVehicleCount(vehicleCount);
+            event.setPedestrianCount(pedestrianCount);
+            event.setPmCount(pmCount);
 
             // involved_actors → object1, object2
             if (involvedActors != null && involvedActors.size() >= 1) {

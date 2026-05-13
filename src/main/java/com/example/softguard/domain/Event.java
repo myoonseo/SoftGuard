@@ -32,10 +32,10 @@ public class Event {
     private String state;
 
     @Column(name = "vehicle_count")
-    private Integer vehicle_count;
+    private Integer vehicleCount;
 
     @Column(name = "pedestrian_count")
-    private Integer pedestrian_count;
+    private Integer pedestrianCount;
 
     // ✅ 추가 - 감지된 PM(전동킥보드) 수
     @Column(name = "pm_count")
@@ -55,6 +55,11 @@ public class Event {
     //추가 - 영상 URL 부분
     @Column(name = "video_url")
     private String videoUrl;
+
+    // 영상 썸네일 관련 부분
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
 
     //summary 부분 추가!
     @Column(columnDefinition = "TEXT")

@@ -50,10 +50,11 @@ public class VideoController {
 
             // DTO에서 받은 값 설정
             event.setVideoUrl(request.getVideoUrl());
+            event.setThumbnailUrl(request.getThumbnailUrl()); //썸네일 관련
             event.setLevel(request.getRiskLevel());      // "danger" → RiskLevel.danger 자동 변환
             event.setState(request.getState());
-            event.setVehicle_count(request.getVehicleCount() != null ? request.getVehicleCount() : 0);
-            event.setPedestrian_count(request.getPedestrianCount() != null ? request.getPedestrianCount() : 0);
+            event.setVehicleCount(request.getVehicleCount() != null ? request.getVehicleCount() : 0);
+            event.setPedestrianCount(request.getPedestrianCount() != null ? request.getPedestrianCount() : 0);
             event.setPmCount(request.getPmCount() != null ? request.getPmCount() : 0);
             event.setCollisionTime(request.getCollisionTime());
 
