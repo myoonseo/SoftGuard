@@ -25,8 +25,8 @@ public class InsightService {
     private final HyperClovaXService hyperClovaXService;
 
     // ① 매 정시마다 자동 실행 (스케줄러)
-    //@Scheduled(fixedDelay = 20000)
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(fixedDelay = 20000)
+    //@Scheduled(cron = "0 0 * * * *")
     public void generateHourlySummary() {
         log.info("[Scheduler] 1시간 요약 생성 시작");
 
@@ -121,12 +121,12 @@ public class InsightService {
 
         // 평균 차량 수 / 보행자 수
         double avgVehicle = events.stream()
-                .filter(e -> e.getVehicle_count() != null)
-                .mapToInt(Event::getVehicle_count)
+                .filter(e -> e.getVehicleCount() != null)
+                .mapToInt(Event::getVehicleCount)
                 .average().orElse(0);
         double avgPedestrian = events.stream()
-                .filter(e -> e.getPedestrian_count() != null)
-                .mapToInt(Event::getPedestrian_count)
+                .filter(e -> e.getPedestrianCount() != null)
+                .mapToInt(Event::getPedestrianCount)
                 .average().orElse(0);
 
         // 시나리오 목록 (각 Event의 summary)
