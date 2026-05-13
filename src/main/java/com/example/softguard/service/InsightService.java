@@ -5,6 +5,7 @@ import com.example.softguard.domain.InsightSummary;
 import com.example.softguard.dto.InsightResponse;
 import com.example.softguard.repository.EventRepository;
 import com.example.softguard.repository.InsightSummaryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -60,7 +61,8 @@ public class InsightService {
 //
 //        log.info("[Scheduler] {} 요약 저장 완료 (이벤트 {}건)", timeRange, events.size());
 //    }
-    @Scheduled(fixedDelay = 20000)
+    @Scheduled(fixedDelay = 30000)
+    @Transactional
     public void generateHourlySummary() {
         log.info("[Scheduler] 배치 요약 생성 시작");
 

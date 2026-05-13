@@ -8,6 +8,6 @@ import lombok.Getter;
 public class StatsResponseDto {
     private Long nearMissToday;
     private Double dangerRatio;
-    //private Double conversionProbability;  // 아직 미구현
+    //private Double conversionProbability;  // 미구현
     private Double nightRatio;
 }
