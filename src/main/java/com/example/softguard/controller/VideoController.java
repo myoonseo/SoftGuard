@@ -61,6 +61,7 @@ public class VideoController {
             event.setCollisionTime(request.getCollisionTime());
 
             // 자동 설정 값
+            event.setTime(request.getTime()); // DTO에 time 필드 추가
             //event.setTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))); // 현재 시각
             //event.setLocation("분석 전"); // AI 분석 후 채워짐
             event.setLocation(request.getLocation() != null ? request.getLocation() : "분석 전");

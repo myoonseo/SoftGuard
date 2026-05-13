@@ -14,6 +14,7 @@ public class VideoUploadRequest {
     private String thumbnailUrl;
 
     private String action;
+    private String time; // VideoUploadRequest.java에 추가
 
     //위치
     private String location;
