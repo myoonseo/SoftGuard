@@ -65,7 +65,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         @Query("SELECT e FROM Event e WHERE e.videoUrl IS NOT NULL AND e.summary IS NULL ORDER BY e.createdAt ASC")
         List<Event> findPendingEvents();
 
+    // summary가 존재하는 Event 조회 (이벤트 스트림 카드용)
+    List<Event> findBySummaryIsNotNullOrderByCreatedAtDesc();
 
-    }
+
+}
 
 

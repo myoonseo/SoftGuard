@@ -15,6 +15,9 @@ public class VideoUploadRequest {
 
     private String action;
 
+    //위치
+    private String location;
+
     // 위험 단계 (문자열로 받아서 Enum으로 변환)
     // 예: "danger", "warning", "normal"
     private String level;
