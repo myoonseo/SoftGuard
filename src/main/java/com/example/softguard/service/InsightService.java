@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -135,10 +136,14 @@ public class InsightService {
             return;
         }
 
-        LocalDateTime start = LocalDateTime.now()
-                .withHour(currentHour).withMinute(0).withSecond(0);
-        LocalDateTime end = LocalDateTime.now()
-                .withHour(currentHour).withMinute(59).withSecond(59);
+//        LocalDateTime start = LocalDateTime.now()
+//                .withHour(currentHour).withMinute(0).withSecond(0);
+//        LocalDateTime end = LocalDateTime.now()
+//                .withHour(currentHour).withMinute(59).withSecond(59);
+
+        // ✅ buildPrompt용 LocalDateTime (날짜는 오늘 기준)
+        LocalDateTime start = LocalDate.now().atTime(currentHour, 0, 0);
+        LocalDateTime end = LocalDate.now().atTime(currentHour, 59, 59);
 
         String timeRange = String.format("%02d:00~%02d:59", currentHour, currentHour);
 
