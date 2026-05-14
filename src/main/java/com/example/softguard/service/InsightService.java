@@ -5,6 +5,7 @@ import com.example.softguard.domain.InsightSummary;
 import com.example.softguard.dto.InsightResponse;
 import com.example.softguard.repository.EventRepository;
 import com.example.softguard.repository.InsightSummaryRepository;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,13 +64,62 @@ public class InsightService {
 //    }
 
     // 시연용 - 현재 시간대 추적
-    private int currentHour = 7;  // 시작 시간
+//    private int currentHour = 7;  // 시작 시간
+//
+//    @Scheduled(fixedDelay = 20000)  // 2분마다 실행
+//    public void generateHourlySummary() {
+//        if (currentHour > 12) {
+//            log.info("[Scheduler] 모든 시간대 요약 완료");
+//            return;
+//        }
+//
+//        log.info("[Scheduler] {}시 요약 생성 시작", currentHour);
+//
+//        String startStr = String.format("%02d:00:00", currentHour);
+//        String endStr   = String.format("%02d:59:59", currentHour);
+//
+//        // ✅ time 컬럼 기준으로 조회
+//        List<Event> events = eventRepository.findEventsBetween(startStr, endStr);
+//
+//        if (events.isEmpty()) {
+//            log.info("[Scheduler] {}시 이벤트 없음 - 요약 생략", currentHour);
+//            currentHour++;
+//            return;
+//        }
+//
+//        // ✅ buildPrompt용 LocalDateTime (날짜는 오늘 기준)
+//        LocalDateTime start = LocalDateTime.now()
+//                .withHour(currentHour).withMinute(0).withSecond(0);
+//        LocalDateTime end = LocalDateTime.now()
+//                .withHour(currentHour).withMinute(59).withSecond(59);
+//
+//        String timeRange = String.format("%02d:00~%02d:59", currentHour, currentHour);
+//
+//        String prompt = buildPrompt(events, start, end);
+//        Map<String, String> result = hyperClovaXService.summarize(prompt);
+//
+//        InsightSummary insightSummary = new InsightSummary();
+//        insightSummary.setTimeRange(timeRange);
+//        insightSummary.setStartTime(start);
+//        insightSummary.setEndTime(end);
+//        insightSummary.setSummary(result.get("summary"));
+//        insightSummary.setSuggestion(result.get("suggestion"));
+//        insightSummary.setEventCount(events.size());
+//        insightSummaryRepository.save(insightSummary);
+//
+//        log.info("[Scheduler] {} 요약 저장 완료 (이벤트 {}건)", timeRange, events.size());
+//
+//        currentHour++;  // 다음 시간대로 이동
+//    }
+    private int currentHour = 7;
 
-    @Scheduled(fixedDelay = 120000)  // 2분마다 실행
+    @Scheduled(fixedDelay = 30000)
     public void generateHourlySummary() {
+        // ✅ 12시 넘으면 7시로 리셋 (무한 반복)
         if (currentHour > 12) {
-            log.info("[Scheduler] 모든 시간대 요약 완료");
-            return;
+            currentHour = 7;
+            insightSummaryRepository.deleteAll();  // 기존 요약 초기화
+            log.info("[Scheduler] 모든 시간대 완료 - 7시부터 다시 시작");
         }
 
         log.info("[Scheduler] {}시 요약 생성 시작", currentHour);
@@ -77,16 +127,14 @@ public class InsightService {
         String startStr = String.format("%02d:00:00", currentHour);
         String endStr   = String.format("%02d:59:59", currentHour);
 
-        // ✅ time 컬럼 기준으로 조회
         List<Event> events = eventRepository.findEventsBetween(startStr, endStr);
 
         if (events.isEmpty()) {
-            log.info("[Scheduler] {}시 이벤트 없음 - 요약 생략", currentHour);
+            log.info("[Scheduler] {}시 이벤트 없음 - 건너뜀", currentHour);
             currentHour++;
             return;
         }
 
-        // ✅ buildPrompt용 LocalDateTime (날짜는 오늘 기준)
         LocalDateTime start = LocalDateTime.now()
                 .withHour(currentHour).withMinute(0).withSecond(0);
         LocalDateTime end = LocalDateTime.now()
@@ -108,9 +156,8 @@ public class InsightService {
 
         log.info("[Scheduler] {} 요약 저장 완료 (이벤트 {}건)", timeRange, events.size());
 
-        currentHour++;  // 다음 시간대로 이동
+        currentHour++;
     }
-
     // ② 프론트 요청 시 - 가장 최근 요약 반환
     public InsightResponse getLatestInsight() {
         InsightSummary latest = insightSummaryRepository

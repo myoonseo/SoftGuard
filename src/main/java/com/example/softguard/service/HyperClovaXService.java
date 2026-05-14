@@ -87,9 +87,28 @@ public class HyperClovaXService {
     }
 
     // JSON 응답 파싱
+//    private Map<String, String> parseJsonResponse(String content) {
+//        try {
+//            // ```json ... ``` 형식으로 올 경우 제거
+//            String cleaned = content
+//                    .replaceAll("```json", "")
+//                    .replaceAll("```", "")
+//                    .trim();
+//
+//            Map<String, Object> parsed = objectMapper.readValue(cleaned, Map.class);
+//
+//            Map<String, String> result = new HashMap<>();
+//            result.put("summary", (String) parsed.getOrDefault("summary", "요약 생성 실패"));
+//            result.put("suggestion", (String) parsed.getOrDefault("suggestion", "운영 제안 생성 실패"));
+//            return result;
+//
+//        } catch (Exception e) {
+//            log.error("[HCX] JSON 파싱 오류: {}", content, e);
+//            return fallbackResponse("요약 파싱 실패", "운영 제안 파싱 실패");
+//        }
+//    }
     private Map<String, String> parseJsonResponse(String content) {
         try {
-            // ```json ... ``` 형식으로 올 경우 제거
             String cleaned = content
                     .replaceAll("```json", "")
                     .replaceAll("```", "")
@@ -97,9 +116,21 @@ public class HyperClovaXService {
 
             Map<String, Object> parsed = objectMapper.readValue(cleaned, Map.class);
 
+            // ✅ Object로 받은 후 toString()으로 변환
+            Object summaryObj = parsed.getOrDefault("summary", "요약 생성 실패");
+            Object suggestionObj = parsed.getOrDefault("suggestion", "운영 제안 생성 실패");
+
+            String summary = summaryObj instanceof List
+                    ? String.join(" ", (List<String>) summaryObj)
+                    : summaryObj.toString();
+
+            String suggestion = suggestionObj instanceof List
+                    ? String.join(" ", (List<String>) suggestionObj)
+                    : suggestionObj.toString();
+
             Map<String, String> result = new HashMap<>();
-            result.put("summary", (String) parsed.getOrDefault("summary", "요약 생성 실패"));
-            result.put("suggestion", (String) parsed.getOrDefault("suggestion", "운영 제안 생성 실패"));
+            result.put("summary", summary);
+            result.put("suggestion", suggestion);
             return result;
 
         } catch (Exception e) {
