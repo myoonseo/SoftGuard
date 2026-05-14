@@ -73,13 +73,18 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                 nativeQuery = true)
         Long countNighttime();
 
-        //summary 관련
-        @Query("SELECT e FROM Event e WHERE e.createdAt BETWEEN :start AND :end ORDER BY e.createdAt ASC")
+        //summary 관련 (시간 이슈때무녜)
+//        @Query("SELECT e FROM Event e WHERE e.createdAt BETWEEN :start AND :end ORDER BY e.createdAt ASC")
+//        List<Event> findEventsBetween(
+//            @Param("start") LocalDateTime start,
+//            @Param("end") LocalDateTime end
+//    );
+        // 기존 (LocalDateTime → String으로 변경)
+        @Query("SELECT e FROM Event e WHERE e.time BETWEEN :start AND :end ORDER BY e.time ASC")
         List<Event> findEventsBetween(
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end
-    );
-
+                @Param("start") String start,
+                @Param("end") String end
+        );
         //summary가 null인 Event 조회
         @Query("SELECT e FROM Event e WHERE e.videoUrl IS NOT NULL AND e.summary IS NULL ORDER BY e.createdAt ASC")
         List<Event> findPendingEvents();

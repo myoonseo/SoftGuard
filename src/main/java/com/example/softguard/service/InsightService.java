@@ -26,30 +26,77 @@ public class InsightService {
     private final HyperClovaXService hyperClovaXService;
 
     // ① 매 정시마다 자동 실행 (스케줄러) //우리 데이터 없어서 지금 코드 변경함.
-    @Scheduled(fixedDelay = 20000)
-    //@Scheduled(cron = "0 0 * * * *")
+//    @Scheduled(fixedDelay = 20000)
+//    //@Scheduled(cron = "0 0 * * * *")
+//    public void generateHourlySummary() {
+//        log.info("[Scheduler] 1시간 요약 생성 시작");
+//
+//        LocalDateTime end = LocalDateTime.now();
+//        LocalDateTime start = end.minusHours(1);
+//
+//        // DB에서 지난 1시간 이벤트 조회
+//        List<Event> events = eventRepository.findEventsBetween(start, end);
+//
+//        if (events.isEmpty()) {
+//            log.info("[Scheduler] 이벤트 없음 - 요약 생략");
+//            return;
+//        }
+//
+//        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm");
+//        String timeRange = start.format(fmt) + "~" + end.format(fmt);
+//
+//        // 전처리 + 프롬프트 생성 + HCX-007 호출
+//        String prompt = buildPrompt(events, start, end);
+//        Map<String, String> result = hyperClovaXService.summarize(prompt);
+//
+//        // insight_summary 테이블에 저장
+//        InsightSummary insightSummary = new InsightSummary();
+//        insightSummary.setTimeRange(timeRange);
+//        insightSummary.setStartTime(start);
+//        insightSummary.setEndTime(end);
+//        insightSummary.setSummary(result.get("summary"));
+//        insightSummary.setSuggestion(result.get("suggestion"));
+//        insightSummary.setEventCount(events.size());
+//        insightSummaryRepository.save(insightSummary);
+//
+//        log.info("[Scheduler] {} 요약 저장 완료 (이벤트 {}건)", timeRange, events.size());
+//    }
+
+    // 시연용 - 현재 시간대 추적
+    private int currentHour = 7;  // 시작 시간
+
+    @Scheduled(fixedDelay = 120000)  // 2분마다 실행
     public void generateHourlySummary() {
-        log.info("[Scheduler] 1시간 요약 생성 시작");
-
-        LocalDateTime end = LocalDateTime.now();
-        LocalDateTime start = end.minusHours(1);
-
-        // DB에서 지난 1시간 이벤트 조회
-        List<Event> events = eventRepository.findEventsBetween(start, end);
-
-        if (events.isEmpty()) {
-            log.info("[Scheduler] 이벤트 없음 - 요약 생략");
+        if (currentHour > 12) {
+            log.info("[Scheduler] 모든 시간대 요약 완료");
             return;
         }
 
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm");
-        String timeRange = start.format(fmt) + "~" + end.format(fmt);
+        log.info("[Scheduler] {}시 요약 생성 시작", currentHour);
 
-        // 전처리 + 프롬프트 생성 + HCX-007 호출
+        String startStr = String.format("%02d:00:00", currentHour);
+        String endStr   = String.format("%02d:59:59", currentHour);
+
+        // ✅ time 컬럼 기준으로 조회
+        List<Event> events = eventRepository.findEventsBetween(startStr, endStr);
+
+        if (events.isEmpty()) {
+            log.info("[Scheduler] {}시 이벤트 없음 - 요약 생략", currentHour);
+            currentHour++;
+            return;
+        }
+
+        // ✅ buildPrompt용 LocalDateTime (날짜는 오늘 기준)
+        LocalDateTime start = LocalDateTime.now()
+                .withHour(currentHour).withMinute(0).withSecond(0);
+        LocalDateTime end = LocalDateTime.now()
+                .withHour(currentHour).withMinute(59).withSecond(59);
+
+        String timeRange = String.format("%02d:00~%02d:59", currentHour, currentHour);
+
         String prompt = buildPrompt(events, start, end);
         Map<String, String> result = hyperClovaXService.summarize(prompt);
 
-        // insight_summary 테이블에 저장
         InsightSummary insightSummary = new InsightSummary();
         insightSummary.setTimeRange(timeRange);
         insightSummary.setStartTime(start);
@@ -60,43 +107,10 @@ public class InsightService {
         insightSummaryRepository.save(insightSummary);
 
         log.info("[Scheduler] {} 요약 저장 완료 (이벤트 {}건)", timeRange, events.size());
+
+        currentHour++;  // 다음 시간대로 이동
     }
-//    @Scheduled(fixedDelay = 30000)
-//    @Transactional
-//    public void generateHourlySummary() {
-//        log.info("[Scheduler] 배치 요약 생성 시작");
-//
-//        List<Event> events = eventRepository.findTop4ByProcessedFalseOrderByCreatedAtAsc();
-//
-//        if (events.isEmpty()) {
-//            log.info("[Scheduler] 처리할 이벤트 없음 - 스킵");
-//            return;
-//        }
-//
-//        LocalDateTime start = events.get(0).getCreatedAt();
-//        LocalDateTime end = events.get(events.size() - 1).getCreatedAt();
-//
-//        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm");
-//        String timeRange = start.format(fmt) + "~" + end.format(fmt);
-//
-//        String prompt = buildPrompt(events, start, end);
-//        Map<String, String> result = hyperClovaXService.summarize(prompt);
-//
-//        InsightSummary insightSummary = new InsightSummary();
-//        insightSummary.setTimeRange(timeRange);
-//        insightSummary.setStartTime(start);
-//        insightSummary.setEndTime(end);
-//        insightSummary.setSummary(result.get("summary"));
-//        insightSummary.setSuggestion(result.get("suggestion"));
-//        insightSummary.setEventCount(events.size());
-//        insightSummaryRepository.save(insightSummary);
-//
-//        // 처리 완료 표시
-//        events.forEach(e -> e.setProcessed(true));
-//        eventRepository.saveAll(events);
-//
-//        log.info("[Scheduler] {} 요약 저장 완료 (이벤트 {}건)", timeRange, events.size());
-//    }
+
     // ② 프론트 요청 시 - 가장 최근 요약 반환
     public InsightResponse getLatestInsight() {
         InsightSummary latest = insightSummaryRepository
